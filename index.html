@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brezza – wind sensor for awnings</title>
+<meta name="description" content="Brezza is an open source, battery-powered Zigbee vibration sensor that tells your smart home when the wind is shaking the awning.">
+<meta property="og:title" content="Brezza – wind sensor for awnings">
+<meta property="og:description" content="Open source Zigbee vibration sensor for retractable awnings. ESP32-H2, LIS2DW12, one CR123A cell.">
+<meta property="og:image" content="img/render_front_bar.png">
+<style>
+:root{--bg:#fbfbfd;--bg2:#f5f5f7;--fg:#1d1d1f;--muted:#6e6e73;--accent:#6b3fc4;--accent2:#c06bff;--line:#d2d2d7;--nav:rgba(251,251,253,.72)}
+@media (prefers-color-scheme:dark){:root{--bg:#000;--bg2:#111113;--fg:#f5f5f7;--muted:#a1a1a6;--accent:#a98bf0;--accent2:#e0a6ff;--line:#2a2a2e;--nav:rgba(0,0,0,.65)}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+a.soon{cursor:default;opacity:.55}
+a.soon:hover{text-decoration:none;filter:none;transform:none}
+a.soon:not(.btn)::after{content:' (soon)';font-size:.85em}
+.wrap{max-width:980px;margin:0 auto;padding:0 20px}
+
+/* nav */
+nav.top{position:fixed;inset:0 0 auto 0;height:48px;z-index:50;background:var(--nav);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid transparent;transition:border-color .3s}
+nav.top.scrolled{border-bottom-color:var(--line)}
+nav.top .wrap{display:flex;align-items:center;justify-content:space-between;height:100%;max-width:1080px}
+nav.top .logo{font-weight:600;color:var(--fg);letter-spacing:.02em}
+nav.top ul{display:flex;gap:24px;margin:0;padding:0;list-style:none;font-size:13px}
+nav.top ul a{color:var(--muted);transition:color .2s}
+nav.top ul a:hover{color:var(--fg);text-decoration:none}
+@media(max-width:640px){nav.top ul li:nth-child(n+3){display:none}}
+
+/* typography */
+.eyebrow{font-size:clamp(15px,2vw,19px);font-weight:600;color:var(--accent);margin:0 0 8px}
+h1,h2{letter-spacing:-.03em;margin:0;line-height:1.05;font-weight:700}
+h1{font-size:clamp(2.6rem,8vw,5.6rem)}
+h2{font-size:clamp(2rem,5.5vw,4rem)}
+.grad{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:clamp(1.1rem,2.4vw,1.5rem);color:var(--muted);max-width:720px;margin:20px auto 0;line-height:1.4}
+
+/* hero */
+.hero{min-height:100vh;padding:120px 0 0;text-align:center;overflow:hidden}
+.hero .cta{margin-top:28px}
+.btn{display:inline-block;padding:12px 24px;border-radius:980px;background:var(--accent);color:#fff;font-size:17px;font-weight:500;margin:6px;transition:transform .25s,filter .25s}
+.btn:hover{text-decoration:none;filter:brightness(1.1);transform:scale(1.04)}
+.btn.alt{background:transparent;color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.hero-img{display:block;width:min(1000px,94vw);margin:48px auto 0;border-radius:24px 24px 0 0;transform-origin:50% 100%;will-change:transform,opacity}
+
+/* sections */
+section{padding:clamp(80px,14vw,160px) 0;text-align:center}
+section.alt{background:var(--bg2)}
+section.dark{background:#000;color:#f5f5f7;--muted:#a1a1a6}
+.left{text-align:left}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(40px) scale(.98);filter:blur(6px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1),filter .9s}
+.rv.in{opacity:1;transform:none;filter:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:32px;margin-top:64px}
+.stat b{display:block;font-size:clamp(2.8rem,7vw,4.6rem);line-height:1;letter-spacing:-.04em}
+.stat span{display:block;margin-top:8px;color:var(--muted);font-size:15px}
+
+/* steps */
+.steps{max-width:720px;margin:64px auto 0;text-align:left;counter-reset:s}
+.step{display:flex;gap:24px;padding:28px 0;border-top:1px solid var(--line);opacity:.35;transition:opacity .5s}
+.step.on{opacity:1}
+.step::before{counter-increment:s;content:counter(s);font-size:2.4rem;font-weight:700;line-height:1;color:var(--accent);min-width:40px}
+.step p{margin:0;font-size:clamp(1.05rem,2.2vw,1.35rem)}
+
+/* cards */
+.grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));margin-top:56px;text-align:left}
+.card{background:var(--bg);border-radius:28px;padding:28px;overflow:hidden;transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s}
+section:not(.alt) .card{background:var(--bg2)}
+.card:hover{transform:translateY(-6px) scale(1.015);box-shadow:0 24px 48px -16px rgba(107,63,196,.35)}
+.card img{width:100%;border-radius:16px;margin-bottom:16px;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.card:hover img{transform:scale(1.06)}
+.card h3{margin:0 0 6px;font-size:1.5rem;letter-spacing:-.02em}
+.card p{margin:0 0 12px;color:var(--muted)}
+
+/* pinned enclosure */
+.pin{height:420vh;position:relative;background:#000;color:#f5f5f7}
+.pin .stick{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;padding:72px 20px 24px}
+.pin .stick h2{font-size:clamp(1.8rem,4.5vw,3.2rem)}
+.pin .stage{position:relative;width:min(820px,92vw,calc((100vh - 300px)*1.6));aspect-ratio:16/10;margin-top:12px}
+.pin .stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transform:scale(.92);transition:opacity .7s,transform 1s cubic-bezier(.2,.7,.2,1)}
+.pin .stage img.on{opacity:1;transform:scale(1)}
+.pin .cap{min-height:3.2em;margin-top:12px;color:#a1a1a6;max-width:560px;text-align:center;transition:opacity .4s}
+.dots{display:flex;gap:8px;margin-top:12px}
+.dots i{width:8px;height:8px;border-radius:50%;background:#444;transition:background .3s,transform .3s}
+.dots i.on{background:var(--accent2);transform:scale(1.4)}
+
+/* table */
+table{border-collapse:collapse;width:100%;max-width:720px;margin:48px auto 0;text-align:left}
+th,td{padding:14px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;width:42%}
+td{color:var(--muted)}
+code{background:var(--bg2);padding:2px 6px;border-radius:6px;font-size:.9em;color:var(--fg)}
+section.alt code{background:var(--bg)}
+footer{padding:40px 0;text-align:center;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .rv{opacity:1;transform:none;filter:none;transition:none}
+  .step{opacity:1}
+  .hero-img{transform:none!important;opacity:1!important}
+  .card,.card img,.btn{transition:none}
+}
+</style>
+</head>
+<body>
+<nav class="top" id="nav"><div class="wrap">
+  <a class="logo" href="#top">Brezza</a>
+  <ul><li><a href="#how">How it works</a></li><li><a href="#hardware">Hardware</a></li><li><a href="#enclosure">Enclosure</a></li><li><a href="#firmware">Firmware</a></li><li><a data-gh="https://github.com/altrdev/brezza">GitHub</a></li></ul>
+</div></nav>
+
+<main id="top">
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow rv">Open source · Zigbee · Battery powered</p>
+    <h1 class="rv d1">Feel the <span class="grad">wind.</span><br>Before it hurts.</h1>
+    <p class="lead rv d2">Brezza watches the front bar of your awning and tells your smart home the moment the wind starts shaking it.</p>
+    <div class="cta rv d3">
+      <a class="btn" data-gh="https://github.com/altrdev/brezza" data-soon="Open source soon">View on GitHub</a>
+      <a class="btn alt" data-gh="https://github.com/altrdev/brezza/releases/tag/v1.0-prototype" data-soon="CAD files soon">Download CAD files</a>
+    </div>
+  </div>
+  <img class="hero-img" id="heroimg" src="img/render_front_bar.png" alt="Brezza mounted on the front bar of an awning">
+</header>
+
+<section class="alt" id="how">
+  <div class="wrap">
+    <p class="eyebrow rv">How it works</p>
+    <h2 class="rv d1">Asleep almost<br>all the time.</h2>
+    <p class="lead rv d2">An ESP32-H2, a LIS2DW12 accelerometer and one CR123A cell. When the awning is still, nothing is transmitted.</p>
+    <div class="stats">
+      <div class="stat rv"><b data-n="1" data-pre="~" data-suf=" µA">~1 µA</b><span>accelerometer, listening</span></div>
+      <div class="stat rv d1"><b data-n="5" data-suf=" s">5 s</b><span>of vibration measured</span></div>
+      <div class="stat rv d2"><b data-n="30" data-suf=" s">30 s</b><span>between re-checks in a storm</span></div>
+      <div class="stat rv d3"><b data-n="5.5" data-suf=" h">5.5 h</b><span>between battery reports</span></div>
+    </div>
+    <div class="steps" id="steps">
+      <div class="step"><p>The LIS2DW12 raises a wake-up interrupt when it detects shaking.</p></div>
+      <div class="step"><p>The ESP32-H2 measures vibration for 5 seconds: RMS in mg, gravity removed, independent of orientation.</p></div>
+      <div class="step"><p>It joins the Zigbee network, reports the level, and goes back to sleep.</p></div>
+      <div class="step"><p>While the shaking continues it wakes every 30 s to measure again. When things calm down, the interrupt is re-armed.</p></div>
+      <div class="step"><p>Every 5.5 hours it wakes on a timer just to report the battery level.</p></div>
+    </div>
+    <p class="lead rv">In Home Assistant it shows up through ZHA as <em>Vibration RMS (mg)</em>, plus battery.</p>
+  </div>
+</section>
+
+<section id="hardware">
+  <div class="wrap">
+    <p class="eyebrow rv">Hardware</p>
+    <h2 class="rv d1">Three ways to build it.</h2>
+    <p class="lead rv d2">Same firmware, same pin map. Pick the one that fits your workshop.</p>
+    <div class="grid">
+      <div class="card rv"><h3>Breadboard</h3><p>ESP32-H2 SuperMini and a GY-291 breakout, with the cell on the 3V3 pin. The quickest way to try it.</p><a data-gh="https://github.com/altrdev/brezza/tree/main/hardware/breadboard">Wiring ›</a></div>
+      <div class="card rv d1"><img src="img/pcb_module.png" alt="Module board, 3D view"><h3>Module board</h3><p>Custom 80 × 35 mm PCB with ESP32-H2-MINI-1 and a TPS63900 buck-boost. Assembled by JLCPCB.</p><a data-gh="https://github.com/altrdev/brezza/tree/main/hardware/pcb">KiCad and BOM ›</a></div>
+      <div class="card rv d2"><img src="img/pcb_supermini.png" alt="SuperMini board, 3D view"><h3>SuperMini board</h3><p>The same electronics with a SuperMini soldered by its edge. Easier to source.</p><a data-gh="https://github.com/altrdev/brezza/tree/main/hardware/pcb_supermini">KiCad and BOM ›</a></div>
+    </div>
+    <p class="lead rv">Design decisions and numbers: <a data-gh="https://github.com/altrdev/brezza/blob/main/hardware/SPEC.md"><code>hardware/SPEC.md</code></a></p>
+  </div>
+</section>
+
+<div class="pin" id="enclosure" data-pin>
+  <div class="stick">
+    <p class="eyebrow">Enclosure</p>
+    <h2>Printed. Bolted. Done.</h2>
+    <div class="stage">
+      <img class="on" src="img/render_closed.png" alt="Closed box">
+      <img src="img/render_base_on_bar.png" alt="Base plate on the bar with the M4 screws">
+      <img src="img/render_back_open.png" alt="Inside the lid: board and cell">
+      <img src="img/render_transparent.png" alt="Lid in clear glass">
+    </div>
+    <p class="cap" id="cap"></p>
+    <div class="dots" id="dots"><i></i><i></i><i></i><i></i></div>
+  </div>
+</div>
+
+<section class="alt">
+  <div class="wrap">
+    <p class="lead rv" style="margin-top:0">A box in ASA-GF that sits on the face of the bar, held by two M4 screws into T-nuts in the slot. The Fusion 360 design, the assembly animation and the video are on the <a data-gh="https://github.com/altrdev/brezza/releases/tag/v1.0-prototype">v1.0-prototype release</a>.</p>
+  </div>
+</section>
+
+<section id="firmware">
+  <div class="wrap">
+    <p class="eyebrow rv">Firmware</p>
+    <h2 class="rv d1">Arduino. Zigbee end device.</h2>
+    <p class="lead rv d2">The sketch is <code>firmware/brezza/brezza.ino</code>, built with Arduino-ESP32 3.1 or newer.</p>
+    <table class="rv">
+      <tr><th>Board</th><td>ESP32H2 Dev Module</td></tr>
+      <tr><th>USB CDC On Boot</th><td>Enabled</td></tr>
+      <tr><th>Partition Scheme</th><td>Zigbee 4MB with spiffs</td></tr>
+      <tr><th>Zigbee Mode</th><td>Zigbee ED (end device)</td></tr>
+    </table>
+    <p class="lead rv">Hold BOOT for 3 seconds at power-up to wipe the stored network. Calibration and bench findings are in the <a data-gh="https://github.com/altrdev/brezza#battery-calibration">README</a>.</p>
+  </div>
+</section>
+
+<section class="dark" id="license">
+  <div class="wrap">
+    <p class="eyebrow rv">Open by design</p>
+    <h2 class="rv d1">Build it. Change it. Share it.</h2>
+    <table class="rv">
+      <tr><th>Firmware</th><td>MIT</td></tr>
+      <tr><th>PCBs and enclosure</th><td>CERN-OHL-P-2.0</td></tr>
+      <tr><th>Docs, images, renders, videos</th><td>CC BY 4.0</td></tr>
+    </table>
+    <p class="lead rv">The ESP32-H2-MINI-1 footprint, symbol and 3D model come from Espressif (CC BY-SA 4.0). See the <a data-gh="https://github.com/altrdev/brezza#license">README</a> for third-party files.</p>
+    <p class="rv"><a class="btn" data-gh="https://github.com/altrdev/brezza" data-soon="Coming soon">Star on GitHub</a></p>
+  </div>
+</section>
+</main>
+
+<footer>Copyright © 2026 Alessandro Travi (altdev) · <a data-gh="https://github.com/altrdev/brezza">github.com/altrdev/brezza</a></footer>
+
+<script>
+(function(){
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
+
+  // Links to the GitHub repo stay inert until the repo is public.
+  // Set REPO_PUBLIC to true on the day the repo opens.
+  var REPO_PUBLIC=false;
+  $('a[data-gh]').forEach(function(a){
+    if(REPO_PUBLIC){a.href=a.dataset.gh}
+    else{a.classList.add('soon');a.setAttribute('aria-disabled','true');a.title='Coming soon';if(a.dataset.soon)a.textContent=a.dataset.soon}
+  });
+
+  // reveal on scroll
+  if(reduce||!('IntersectionObserver' in window)){$('.rv').forEach(function(e){e.classList.add('in')})}
+  else{
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.15,rootMargin:'0px 0px -6% 0px'});
+    $('.rv').forEach(function(e){io.observe(e)});
+  }
+
+  // count-up numbers
+  $('.stat b').forEach(function(b){
+    var n=parseFloat(b.dataset.n),pre=b.dataset.pre||'',suf=b.dataset.suf||'',dec=(String(n).split('.')[1]||'').length;
+    if(reduce||!('IntersectionObserver' in window))return;
+    b.textContent=pre+(0).toFixed(dec)+suf;
+    var o=new IntersectionObserver(function(es){if(!es[0].isIntersecting)return;o.disconnect();
+      var t0=performance.now(),d=1400;
+      (function f(t){var p=Math.min(1,(t-t0)/d),e=1-Math.pow(1-p,3);b.textContent=pre+(n*e).toFixed(dec)+suf;if(p<1)requestAnimationFrame(f)})(t0);
+    },{threshold:.6});o.observe(b);
+  });
+
+  // steps light up as you scroll
+  var steps=$('.step');
+  function updSteps(){var mid=innerHeight*.6;steps.forEach(function(s){var r=s.getBoundingClientRect();s.classList.toggle('on',r.top<mid)})}
+
+  // hero: image grows and the text fades
+  var hero=document.getElementById('heroimg');
+  function updHero(){if(reduce)return;var y=Math.min(scrollY,innerHeight),p=y/innerHeight;
+    hero.style.transform='scale('+(1+p*.18)+') translateY('+(p*-30)+'px)';
+    hero.style.opacity=String(1-p*.9)}
+
+  // pinned enclosure sequence
+  var caps=['Closed: it sits flat on the face of the bar.','The base plate on the bar, fixed with two M4 screws into T-nuts.','Inside the lid: the board hangs from it, the cell comes out through the opening.','The lid in clear glass: everything in its place.'];
+  var pin=document.querySelector('[data-pin]'),imgs=$('.stage img'),dots=$('#dots i'),cap=document.getElementById('cap'),cur=-1;
+  function setPin(i){if(i===cur)return;cur=i;imgs.forEach(function(m,k){m.classList.toggle('on',k===i)});dots.forEach(function(d,k){d.classList.toggle('on',k===i)});cap.textContent=caps[i]}
+  function updPin(){var r=pin.getBoundingClientRect(),tot=r.height-innerHeight,p=Math.max(0,Math.min(.999,-r.top/tot));setPin(Math.floor(p*imgs.length))}
+
+  var nav=document.getElementById('nav');
+  function onScroll(){nav.classList.toggle('scrolled',scrollY>8);updHero();updSteps();updPin()}
+  var tick=false;addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(function(){onScroll();tick=false})}},{passive:true});
+  addEventListener('resize',onScroll);onScroll();
+})();
+</script>
+</body>
+</html>
