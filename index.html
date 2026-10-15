@@ -112,7 +112,7 @@ section:not(.alt) .card{background:var(--bg2)}
 
 /* carousel */
 .car{background:#000;color:#f5f5f7;padding:clamp(80px,14vw,160px) 0 clamp(60px,10vw,110px);text-align:center;--muted:#a1a1a6}
-.car h2{margin-bottom:40px}
+.car .lead{margin-bottom:40px}
 .car-wrap{position:relative;max-width:1100px;margin:0 auto}
 .track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .track::before,.track::after{content:'';flex:0 0 max(0px,calc((min(1100px,100vw) - min(860px,88vw))/2 - 16px))}
@@ -132,14 +132,8 @@ section:not(.alt) .card{background:var(--bg2)}
 .dots button.on{background:var(--accent2);transform:scale(1.35)}
 
 
-/* closer */
-.closer{background:#07050f;color:#f5f5f7;padding:clamp(80px,12vw,150px) 0 0;text-align:center;--muted:#a79fc4;overflow:hidden}
-.closer .lead{margin-bottom:0}
-.closer-img{display:block;width:min(1500px,100%);height:auto;margin:clamp(24px,5vw,56px) auto 0;-webkit-mask-image:radial-gradient(ellipse 62% 58% at 50% 50%,#000 55%,transparent 100%);mask-image:radial-gradient(ellipse 62% 58% at 50% 50%,#000 55%,transparent 100%)}
-.closer .rv-img{opacity:0;transform:translateY(50px) scale(.93);transition:opacity 1.2s cubic-bezier(.2,.7,.2,1),transform 1.4s cubic-bezier(.2,.7,.2,1)}
-.closer .rv-img.in{opacity:1;transform:none}
-
-.car .eyebrow,.closer .eyebrow,section.dark .eyebrow{color:#b99cff}
+.car .eyebrow,section.dark .eyebrow{color:#b99cff}
+.car .grad,section.dark .grad{background:linear-gradient(90deg,#b99cff,#f0b8ff);-webkit-background-clip:text;background-clip:text;color:transparent}
 
 /* table */
 table{border-collapse:collapse;width:100%;max-width:720px;margin:48px auto 0;text-align:left}
@@ -153,7 +147,6 @@ footer{padding:40px 0;text-align:center;color:var(--muted);font-size:13px;border
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .rv{opacity:1;transform:none;filter:none;transition:none}
-  .closer .rv-img{opacity:1;transform:none;transition:none}
   .step{opacity:1}
   .hero-img{transform:none!important;opacity:1!important;animation:none}
   .float,.glow,.ring,.streak{animation:none}
@@ -225,14 +218,15 @@ footer{padding:40px 0;text-align:center;color:var(--muted);font-size:13px;border
 <section class="car" id="enclosure">
   <div class="wrap">
     <p class="eyebrow rv">Enclosure</p>
-    <h2 class="rv d1">Printed. Bolted. Done.</h2>
+    <h2 class="rv d1">Mount it.<br><span class="grad">Forget it.</span></h2>
+    <p class="lead rv d2">A matte black box, two M4 screws and one CR123A cell. It sleeps until the wind says otherwise.</p>
   </div>
   <div class="car-wrap rv">
     <button class="nav-btn prev" id="prev" aria-label="Previous image">&#8249;</button>
     <div class="track" id="track" tabindex="0" aria-label="Enclosure images">
       <figure class="slide on"><img src="img/slide-1.webp" alt="Closed box, front"><figcaption>Closed: it sits flat on the face of the bar.</figcaption></figure>
       <figure class="slide"><img src="img/slide-2.webp" alt="Back of the box with the two T-nuts" loading="lazy"><figcaption>The back, with the two T-nuts that slide into the slot of the bar.</figcaption></figure>
-      <figure class="slide"><img src="img/slide-3.webp" alt="Cross-section: the board and the CR123A cell inside the box" loading="lazy"><figcaption>Inside, in cross-section: the board and the CR123A cell.</figcaption></figure>
+      <figure class="slide"><img src="img/slide-3.webp" alt="The inside of the box with the back plate removed: the purple board, the CR123A cell in its holder and the brass inserts" loading="lazy"><figcaption>Inside, with the back plate off: the board, the CR123A cell and its holder.</figcaption></figure>
       <figure class="slide"><img src="img/slide-4.webp" alt="The box in clear glass with the board, inserts and screws in place" loading="lazy"><figcaption>The box in clear glass: board, inserts and screws in place.</figcaption></figure>
     </div>
     <button class="nav-btn next" id="next" aria-label="Next image">&#8250;</button>
@@ -260,18 +254,6 @@ footer{padding:40px 0;text-align:center;color:var(--muted);font-size:13px;border
     </table>
     <p class="lead rv">Hold BOOT for 3 seconds at power-up to wipe the stored network. Calibration and bench findings are in the <a data-gh="https://github.com/altrdev/brezza#battery-calibration">README</a>.</p>
   </div>
-</section>
-
-<section class="closer" id="closer">
-  <div class="wrap">
-    <p class="eyebrow rv">Brezza</p>
-    <h2 class="rv d1">Mount it.<br><span class="grad">Forget it.</span></h2>
-    <p class="lead rv d2">A matte black box, two M4 screws and one CR123A cell. It sleeps until the wind says otherwise.</p>
-  </div>
-  <picture>
-    <source type="image/webp" srcset="img/product-1000.webp 1000w, img/product.webp 2000w" sizes="(max-width:1500px) 100vw, 1500px">
-    <img class="closer-img rv-img rv" src="img/product.jpg" width="2000" height="1125" loading="lazy" alt="The Brezza enclosure: a matte black box on a dark reflective surface with a violet glow">
-  </picture>
 </section>
 
 <section class="dark" id="license">
@@ -348,7 +330,7 @@ footer{padding:40px 0;text-align:center;color:var(--muted);font-size:13px;border
 
   var nav=document.getElementById('nav'),heroSec=document.querySelector('.hero');
   function onScroll(){nav.classList.toggle('scrolled',scrollY>8);var under=document.elementsFromPoint(innerWidth/2,26).filter(function(e){return !nav.contains(e)})[0];
-    nav.classList.toggle('ondark',!!(under&&under.closest('.hero,.car,.closer,section.dark')));updHero();updSteps()}
+    nav.classList.toggle('ondark',!!(under&&under.closest('.hero,.car,section.dark')));updHero();updSteps()}
   var tick=false;addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(function(){onScroll();tick=false})}},{passive:true});
   addEventListener('resize',onScroll);onScroll();
 })();
