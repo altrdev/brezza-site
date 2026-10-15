@@ -119,7 +119,7 @@ section:not(.alt) .card{background:var(--bg2)}
 .track::-webkit-scrollbar{display:none}
 .slide{flex:0 0 min(860px,88vw);scroll-snap-align:center;margin:0;opacity:.45;transform:scale(.94);transition:opacity .5s,transform .6s cubic-bezier(.2,.7,.2,1)}
 .slide.on{opacity:1;transform:none}
-.slide img{display:block;width:100%;aspect-ratio:16/10;object-fit:contain;border-radius:20px;background:#0c0c0e}
+.slide img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:20px;background:#07050f}
 .slide figcaption{margin-top:16px;color:#a1a1a6;font-size:1rem;min-height:3em}
 .nav-btn{position:absolute;top:calc(50% - 40px);width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:22px;line-height:1;cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:background .2s,opacity .2s;z-index:2}
 .nav-btn:hover{background:rgba(255,255,255,.28)}
@@ -138,6 +138,8 @@ section:not(.alt) .card{background:var(--bg2)}
 .closer-img{display:block;width:min(1500px,100%);height:auto;margin:clamp(24px,5vw,56px) auto 0;-webkit-mask-image:radial-gradient(ellipse 62% 58% at 50% 50%,#000 55%,transparent 100%);mask-image:radial-gradient(ellipse 62% 58% at 50% 50%,#000 55%,transparent 100%)}
 .closer .rv-img{opacity:0;transform:translateY(50px) scale(.93);transition:opacity 1.2s cubic-bezier(.2,.7,.2,1),transform 1.4s cubic-bezier(.2,.7,.2,1)}
 .closer .rv-img.in{opacity:1;transform:none}
+
+.car .eyebrow,.closer .eyebrow,section.dark .eyebrow{color:#b99cff}
 
 /* table */
 table{border-collapse:collapse;width:100%;max-width:720px;margin:48px auto 0;text-align:left}
@@ -228,10 +230,10 @@ footer{padding:40px 0;text-align:center;color:var(--muted);font-size:13px;border
   <div class="car-wrap rv">
     <button class="nav-btn prev" id="prev" aria-label="Previous image">&#8249;</button>
     <div class="track" id="track" tabindex="0" aria-label="Enclosure images">
-      <figure class="slide on"><img src="img/render_closed.webp" alt="Closed box"><figcaption>Closed: it sits flat on the face of the bar.</figcaption></figure>
-      <figure class="slide"><img src="img/render_base_on_bar.webp" alt="Base plate on the bar with the M4 screws"><figcaption>The base plate on the bar, fixed with two M4 screws into T-nuts.</figcaption></figure>
-      <figure class="slide"><img src="img/render_back_open.webp" alt="Inside the lid: board and cell"><figcaption>Inside the lid: the board hangs from it, the cell comes out through the opening.</figcaption></figure>
-      <figure class="slide"><img src="img/render_transparent.webp" alt="Lid in clear glass"><figcaption>The lid in clear glass: everything in its place.</figcaption></figure>
+      <figure class="slide on"><img src="img/slide-1.webp" alt="Closed box, front"><figcaption>Closed: it sits flat on the face of the bar.</figcaption></figure>
+      <figure class="slide"><img src="img/slide-2.webp" alt="Back of the box with the two T-nuts" loading="lazy"><figcaption>The back, with the two T-nuts that slide into the slot of the bar.</figcaption></figure>
+      <figure class="slide"><img src="img/slide-3.webp" alt="Cross-section: the board and the CR123A cell inside the box" loading="lazy"><figcaption>Inside, in cross-section: the board and the CR123A cell.</figcaption></figure>
+      <figure class="slide"><img src="img/slide-4.webp" alt="The box in clear glass with the board, inserts and screws in place" loading="lazy"><figcaption>The box in clear glass: board, inserts and screws in place.</figcaption></figure>
     </div>
     <button class="nav-btn next" id="next" aria-label="Next image">&#8250;</button>
     <div class="dots" id="dots"></div>
