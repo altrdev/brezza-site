@@ -34,6 +34,10 @@ a.soon:not(.btn)::after{content:' (soon)';font-size:.85em}
 /* nav */
 nav.top{position:fixed;inset:0 0 auto 0;height:48px;z-index:50;background:var(--nav);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid transparent;transition:border-color .3s}
 nav.top.scrolled{border-bottom-color:var(--line)}
+nav.top.ondark{background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;border-bottom-color:transparent}
+nav.top.ondark .logo{color:#fff}
+nav.top.ondark ul a{color:#cfc6ea}
+nav.top.ondark ul a:hover{color:#fff}
 nav.top .wrap{display:flex;align-items:center;justify-content:space-between;height:100%;max-width:1080px}
 nav.top .logo{font-weight:600;color:var(--fg);letter-spacing:.02em}
 nav.top ul{display:flex;gap:24px;margin:0;padding:0;list-style:none;font-size:13px}
@@ -50,12 +54,27 @@ h2{font-size:clamp(2rem,5.5vw,4rem)}
 .lead{font-size:clamp(1.1rem,2.4vw,1.5rem);color:var(--muted);max-width:720px;margin:20px auto 0;line-height:1.4}
 
 /* hero */
-.hero{min-height:100vh;padding:120px 0 0;text-align:center;overflow:hidden}
+.hero{position:relative;min-height:100vh;padding:110px 0 40px;text-align:center;overflow:hidden;color:#f5f5f7;--muted:#b9b0d6;background:radial-gradient(110% 70% at 50% 100%,#43238a 0%,#190f36 52%,#07050f 100%)}
+.hero .wrap{position:relative;z-index:2}
+.hero .eyebrow{color:#b99cff}
+.hero .grad{background:linear-gradient(90deg,#b99cff,#f0b8ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .btn.alt{color:#d9c9ff;box-shadow:inset 0 0 0 1px #8d6be0}
+.streak{position:absolute;left:-320px;height:2px;width:260px;border-radius:2px;background:linear-gradient(90deg,transparent,rgba(214,190,255,.55),transparent);opacity:0;animation:streak 7s linear infinite;z-index:1}
+@keyframes streak{0%{transform:translateX(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateX(calc(100vw + 640px));opacity:0}}
+.stage-hero{position:relative;z-index:2;width:min(780px,86vw);margin:44px auto 0}
+.glow{position:absolute;left:50%;top:50%;width:130%;aspect-ratio:1;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(168,110,255,.55),rgba(120,70,220,.18) 55%,transparent 75%);filter:blur(10px);animation:pulse 5s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.65;transform:translate(-50%,-50%) scale(1.06)}}
+.ring{position:absolute;left:50%;top:50%;width:70%;aspect-ratio:1;border-radius:50%;border:1.5px solid rgba(200,160,255,.55);transform:translate(-50%,-50%) scale(.4);opacity:0;animation:ring 4.5s ease-out infinite}
+.ring.r2{animation-delay:1.5s}.ring.r3{animation-delay:3s}
+@keyframes ring{0%{transform:translate(-50%,-50%) scale(.4);opacity:.7}100%{transform:translate(-50%,-50%) scale(1.7);opacity:0}}
+.float{position:relative;animation:float 6s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-12px) rotate(-.4deg)}}
+.hero-img{display:block;width:100%;filter:drop-shadow(0 40px 50px rgba(10,0,40,.7)) drop-shadow(0 0 40px rgba(160,100,255,.35));animation:tremble 8s ease-in-out infinite;will-change:transform,opacity}
+@keyframes tremble{0%,86%,100%{transform:translate(0,0) rotate(0)}88%{transform:translate(-3px,1px) rotate(-.5deg)}90%{transform:translate(3px,-1px) rotate(.5deg)}92%{transform:translate(-2px,1px) rotate(-.4deg)}94%{transform:translate(2px,0) rotate(.3deg)}96%{transform:translate(-1px,0) rotate(0)}}
 .hero .cta{margin-top:28px}
 .btn{display:inline-block;padding:12px 24px;border-radius:980px;background:var(--accent);color:#fff;font-size:17px;font-weight:500;margin:6px;transition:transform .25s,filter .25s}
 .btn:hover{text-decoration:none;filter:brightness(1.1);transform:scale(1.04)}
 .btn.alt{background:transparent;color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
-.hero-img{display:block;width:min(1000px,94vw);margin:48px auto 0;border-radius:24px 24px 0 0;transform-origin:50% 100%;will-change:transform,opacity}
 
 /* sections */
 section{padding:clamp(80px,14vw,160px) 0;text-align:center}
@@ -124,7 +143,9 @@ footer{padding:40px 0;text-align:center;color:var(--muted);font-size:13px;border
   html{scroll-behavior:auto}
   .rv{opacity:1;transform:none;filter:none;transition:none}
   .step{opacity:1}
-  .hero-img{transform:none!important;opacity:1!important}
+  .hero-img{transform:none!important;opacity:1!important;animation:none}
+  .float,.glow,.ring,.streak{animation:none}
+  .streak,.ring{display:none}
   .card,.card img,.btn{transition:none}
 }
 </style>
@@ -137,6 +158,7 @@ footer{padding:40px 0;text-align:center;color:var(--muted);font-size:13px;border
 
 <main id="top">
 <header class="hero">
+  <i class="streak" style="top:14%;animation-delay:0s"></i><i class="streak" style="top:26%;animation-delay:2.2s;width:180px"></i><i class="streak" style="top:41%;animation-delay:4.1s;width:320px"></i><i class="streak" style="top:58%;animation-delay:1.1s;width:220px"></i><i class="streak" style="top:73%;animation-delay:5.3s"></i><i class="streak" style="top:86%;animation-delay:3.3s;width:200px"></i>
   <div class="wrap">
     <p class="eyebrow rv">Open source · Zigbee · Battery powered</p>
     <h1 class="rv d1">Feel the <span class="grad">wind.</span><br>Before it hurts.</h1>
@@ -146,7 +168,10 @@ footer{padding:40px 0;text-align:center;color:var(--muted);font-size:13px;border
       <a class="btn alt" data-gh="https://github.com/altrdev/brezza/releases/tag/v1.0-prototype" data-soon="CAD files soon">Download CAD files</a>
     </div>
   </div>
-  <img class="hero-img" id="heroimg" src="img/render_front_bar.png" alt="Brezza mounted on the front bar of an awning">
+  <div class="stage-hero">
+    <div class="glow"></div><span class="ring"></span><span class="ring r2"></span><span class="ring r3"></span>
+    <div class="float"><img class="hero-img" id="heroimg" src="img/hero_board.png" alt="The Brezza board: ESP32-H2, accelerometer and CR123A holder"></div>
+  </div>
 </header>
 
 <section class="alt" id="how">
@@ -280,7 +305,7 @@ footer{padding:40px 0;text-align:center;color:var(--muted);font-size:13px;border
   // hero: image grows and the text fades
   var hero=document.getElementById('heroimg');
   function updHero(){if(reduce)return;var y=Math.min(scrollY,innerHeight),p=y/innerHeight;
-    hero.style.transform='scale('+(1+p*.18)+') translateY('+(p*-30)+'px)';
+    hero.style.transform='scale('+(1+p*.12)+') translateY('+(p*-20)+'px)';
     hero.style.opacity=String(1-p*.9)}
 
   // horizontal carousel
@@ -297,8 +322,8 @@ footer{padding:40px 0;text-align:center;color:var(--muted);font-size:13px;border
   track.addEventListener('keydown',function(e){if(e.key==='ArrowRight'){e.preventDefault();go(cur+1)}else if(e.key==='ArrowLeft'){e.preventDefault();go(cur-1)}});
   addEventListener('resize',sync);sync();
 
-  var nav=document.getElementById('nav');
-  function onScroll(){nav.classList.toggle('scrolled',scrollY>8);updHero();updSteps()}
+  var nav=document.getElementById('nav'),heroSec=document.querySelector('.hero');
+  function onScroll(){nav.classList.toggle('scrolled',scrollY>8);nav.classList.toggle('ondark',scrollY<heroSec.offsetHeight-60);updHero();updSteps()}
   var tick=false;addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(function(){onScroll();tick=false})}},{passive:true});
   addEventListener('resize',onScroll);onScroll();
 })();
