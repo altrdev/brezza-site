@@ -34,7 +34,8 @@ a.soon:not(.btn)::after{content:' (soon)';font-size:.85em}
 /* nav */
 nav.top{position:fixed;inset:0 0 auto 0;height:48px;z-index:50;background:var(--nav);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid transparent;transition:border-color .3s}
 nav.top.scrolled{border-bottom-color:var(--line)}
-nav.top.ondark{background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;border-bottom-color:transparent}
+nav.top.ondark{background:rgba(8,6,18,.62);border-bottom-color:rgba(255,255,255,.08)}
+nav.top.ondark:not(.scrolled){background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;border-bottom-color:transparent}
 nav.top.ondark .logo{color:#fff}
 nav.top.ondark ul a{color:#cfc6ea}
 nav.top.ondark ul a:hover{color:#fff}
@@ -130,6 +131,14 @@ section:not(.alt) .card{background:var(--bg2)}
 .dots button::after{content:'';position:absolute;inset:-12px}
 .dots button.on{background:var(--accent2);transform:scale(1.35)}
 
+
+/* closer */
+.closer{background:#07050f;color:#f5f5f7;padding:clamp(80px,12vw,150px) 0 0;text-align:center;--muted:#a79fc4;overflow:hidden}
+.closer .lead{margin-bottom:0}
+.closer-img{display:block;width:min(1500px,100%);height:auto;margin:clamp(24px,5vw,56px) auto 0;-webkit-mask-image:radial-gradient(ellipse 62% 58% at 50% 50%,#000 55%,transparent 100%);mask-image:radial-gradient(ellipse 62% 58% at 50% 50%,#000 55%,transparent 100%)}
+.closer .rv-img{opacity:0;transform:translateY(50px) scale(.93);transition:opacity 1.2s cubic-bezier(.2,.7,.2,1),transform 1.4s cubic-bezier(.2,.7,.2,1)}
+.closer .rv-img.in{opacity:1;transform:none}
+
 /* table */
 table{border-collapse:collapse;width:100%;max-width:720px;margin:48px auto 0;text-align:left}
 th,td{padding:14px 8px;border-bottom:1px solid var(--line);vertical-align:top}
@@ -142,6 +151,7 @@ footer{padding:40px 0;text-align:center;color:var(--muted);font-size:13px;border
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .rv{opacity:1;transform:none;filter:none;transition:none}
+  .closer .rv-img{opacity:1;transform:none;transition:none}
   .step{opacity:1}
   .hero-img{transform:none!important;opacity:1!important;animation:none}
   .float,.glow,.ring,.streak{animation:none}
@@ -250,6 +260,18 @@ footer{padding:40px 0;text-align:center;color:var(--muted);font-size:13px;border
   </div>
 </section>
 
+<section class="closer" id="closer">
+  <div class="wrap">
+    <p class="eyebrow rv">Brezza</p>
+    <h2 class="rv d1">Mount it.<br><span class="grad">Forget it.</span></h2>
+    <p class="lead rv d2">A matte black box, two M4 screws and one CR123A cell. It sleeps until the wind says otherwise.</p>
+  </div>
+  <picture>
+    <source type="image/webp" srcset="img/product-1000.webp 1000w, img/product.webp 2000w" sizes="(max-width:1500px) 100vw, 1500px">
+    <img class="closer-img rv-img rv" src="img/product.jpg" width="2000" height="1125" loading="lazy" alt="The Brezza enclosure: a matte black box on a dark reflective surface with a violet glow">
+  </picture>
+</section>
+
 <section class="dark" id="license">
   <div class="wrap">
     <p class="eyebrow rv">Open by design</p>
@@ -323,7 +345,8 @@ footer{padding:40px 0;text-align:center;color:var(--muted);font-size:13px;border
   addEventListener('resize',sync);sync();
 
   var nav=document.getElementById('nav'),heroSec=document.querySelector('.hero');
-  function onScroll(){nav.classList.toggle('scrolled',scrollY>8);nav.classList.toggle('ondark',scrollY<heroSec.offsetHeight-60);updHero();updSteps()}
+  function onScroll(){nav.classList.toggle('scrolled',scrollY>8);var under=document.elementsFromPoint(innerWidth/2,26).filter(function(e){return !nav.contains(e)})[0];
+    nav.classList.toggle('ondark',!!(under&&under.closest('.hero,.car,.closer,section.dark')));updHero();updSteps()}
   var tick=false;addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(function(){onScroll();tick=false})}},{passive:true});
   addEventListener('resize',onScroll);onScroll();
 })();
